@@ -1,23 +1,36 @@
-import logo from './logo.svg';
+import { useEffect, useState } from 'react';
 import './App.css';
+import db from "./firebase";
+import { doc, collection, getDocs, onSnapshot } from "firebase/firestore";
+
 
 function App() {
+  const [shops, setShops] = useState([]);
+
+  useEffect(() => {
+    // データ取得
+    const shopData = collection(db, "shops");
+    getDocs(shopData).then((snapShot) => {
+      // console.log(snapShot.docs.map((doc) => ({ ...doc.data() })));
+      setShops(snapShot.docs.map((doc) => ({ ...doc.data() })));
+    });
+    // console.log(shopData);
+
+    // リアルタイム
+    onSnapshot(shopData, (post) => {
+      setShops(post.docs.map((doc) => ({ ...doc.data() })))
+    })
+  }, []);
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <div key={shops.id}>
+      {shops.map((shop) => (
+        <div>
+          <h1>{shop.name}</h1>
+          <p>{shop.place}</p>
+        </div>
+      ))}
+      </div>
     </div>
   );
 }
