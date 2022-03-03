@@ -30,7 +30,7 @@ const HomePage = () => {
     })
   }, []);
   return (
-      <div>
+      <div className='HomePage'>
           <SignOut/>
           leaflet'sへようこそ！
       <SendShops/>
